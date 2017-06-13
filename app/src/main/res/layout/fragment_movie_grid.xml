@@ -3,5 +3,5 @@
     android:id="@+id/movieGrid"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:numColumns="3"
+    android:numColumns="@integer/grid_num_columns_movies"
     android:orientation="vertical" />

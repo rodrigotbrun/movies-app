@@ -1,13 +1,17 @@
 package br.com.newestapps.movie.presenter.activities;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import com.squareup.otto.Subscribe;
 
 import br.com.newestapps.movie.App;
 import br.com.newestapps.movie.R;
 import br.com.newestapps.movie.entities.Movie;
 import br.com.newestapps.movie.entities.PagedResult;
+import br.com.newestapps.movie.events.ChangeFragment;
 import br.com.newestapps.movie.presenter.fragments.MovieGridFrament;
 import br.com.newestapps.movie.support.activities.NetworkActivity;
 import io.github.sporklibrary.Spork;
@@ -42,24 +46,29 @@ public class MainActivity extends NetworkActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Spork.bind(this);
+        App.bus().register(this);
     }
 
     private void loadPlayingNow() {
-
         App.api().getNowPlaying().enqueue(new Callback<PagedResult<Movie>>() {
             @Override
             public void onResponse(Call<PagedResult<Movie>> call, Response<PagedResult<Movie>> response) {
                 if (response.body() != null) {
-                    renderFragment(R.id.content, MovieGridFrament.newInstance(response.body().getResults()), true);
+                    renderReusableFragment(R.id.content, MovieGridFrament.newInstance(response.body().getResults()));
                 }
             }
+
 
             @Override
             public void onFailure(Call<PagedResult<Movie>> call, Throwable t) {
 
             }
         });
+    }
 
+    @Subscribe
+    public void onRequestFragmentChange(ChangeFragment event) {
+        renderReusableFragment(R.id.content, event.getFragment(), true);
     }
 
     @Override

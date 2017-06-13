@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -60,12 +59,11 @@ public class MovieGridViewAdapter extends ArrayAdapter<Movie> {
                 .into(poster, new Callback() {
                     @Override
                     public void onSuccess() {
-                        Log.d("MovieGridViewAdapter", "SUcesso ibage ---> " + posterImgUrl);
                     }
 
                     @Override
                     public void onError() {
-                        Log.d("MovieGridViewAdapter", "ERRO!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        Log.d("MovieGridViewAdapter", "ERRROOuu!!!");
                     }
                 });
 

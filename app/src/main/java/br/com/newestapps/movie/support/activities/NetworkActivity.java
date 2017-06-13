@@ -70,11 +70,18 @@ public abstract class NetworkActivity extends AppCompatActivity {
      * @param fragmentContainerID ID correspondente ao FrameLayout
      * @param fragmentToRender    Fragment para ser renderizado
      */
-    protected void renderReusableFragment(@IdRes int fragmentContainerID, Fragment fragmentToRender) {
+    protected void renderReusableFragment(@IdRes int fragmentContainerID, Fragment fragmentToRender, boolean animateChange) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (animateChange)
+            transaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
+
         transaction.replace(fragmentContainerID, fragmentToRender);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    protected void renderReusableFragment(@IdRes int fragmentContainerID, Fragment fragmentToRender) {
+        renderFragment(fragmentContainerID, fragmentToRender, false);
     }
 
     protected void renderFragment(@IdRes int fragmentContainerID, Fragment fragmentToRender) {

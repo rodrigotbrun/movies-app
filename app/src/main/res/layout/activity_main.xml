@@ -28,8 +28,8 @@
         tools:visibility="visible">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/width_icon_no_internetconnection"
+            android:layout_height="@dimen/height_icon_no_internetconnection"
             android:src="@drawable/ic_signal_wifi_off_white_24dp" />
 
         <android.support.v7.widget.AppCompatTextView
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="Você esta offline!" />
+            android:text="@string/voce_esta_offline" />
 
     </LinearLayout>
 
