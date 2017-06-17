@@ -8,17 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import br.com.newestapps.movie.App;
 import br.com.newestapps.movie.R;
 import br.com.newestapps.movie.entities.Movie;
+import br.com.newestapps.movie.entities.PagedResult;
 import br.com.newestapps.movie.events.ChangeFragment;
+import br.com.newestapps.movie.presenter.activities.MovieDetailsActivity;
 import br.com.newestapps.movie.presenter.activities.adapters.MovieGridViewAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class MovieGridFrament extends Fragment {
+public class MovieBestRatedGridFragment extends Fragment {
 
     ///////////////////////////////////////////////////////////////////////////
     // Views
@@ -36,7 +40,7 @@ public class MovieGridFrament extends Fragment {
     // Methods
     ///////////////////////////////////////////////////////////////////////////
 
-    public MovieGridFrament() {
+    public MovieBestRatedGridFragment() {
 
     }
 
@@ -55,32 +59,39 @@ public class MovieGridFrament extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         movieGrid = (GridView) view.findViewById(R.id.movieGrid);
 
-        if (movies != null && movies.size() > 0) {
-            MovieGridViewAdapter adapter = new MovieGridViewAdapter(getContext(), movies);
-            movieGrid.setAdapter(adapter);
+        App.api().getTopRated().enqueue(new Callback<PagedResult<Movie>>() {
+            @Override
+            public void onResponse(Call<PagedResult<Movie>> call, Response<PagedResult<Movie>> response) {
+                if (response.body() != null) {
+                    movies = response.body().getResults();
 
-            movieGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Movie movie = movies.get(position);
-                    App.bus().post(new ChangeFragment(MovieDetailFrament.newInstance(movie)));
+                    if (movies != null && movies.size() > 0) {
+                        MovieGridViewAdapter adapter = new MovieGridViewAdapter(getContext(), movies);
+                        movieGrid.setAdapter(adapter);
+
+                        movieGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                                Movie movie = movies.get(position);
+                                startActivity(MovieDetailsActivity.newIntent(getContext(), movie));
+                            }
+                        });
+
+                    }
                 }
-            });
+            }
 
-        }
+            @Override
+            public void onFailure(Call<PagedResult<Movie>> call, Throwable t) {
+
+            }
+        });
     }
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
-    }
-
-    public static MovieGridFrament newInstance(List<Movie> movies) {
-        MovieGridFrament frament = new MovieGridFrament();
-        frament.setMovies(movies);
-
+    public static MovieBestRatedGridFragment newInstance() {
+        MovieBestRatedGridFragment frament = new MovieBestRatedGridFragment();
         return frament;
     }
 }

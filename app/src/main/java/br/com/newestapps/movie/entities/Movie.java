@@ -2,19 +2,18 @@ package br.com.newestapps.movie.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
 import java.util.List;
 
 public class Movie {
 
     private int id;
 
-    private List<Gender> gender;
+    private List<Genre> genres;
     private String homepage;
     private boolean adult;
 
     @SerializedName("imdb_id")
-    private int imdbId;
+    private String imdbId;
 
     @SerializedName("original_title")
     private String originalTitle;
@@ -64,12 +63,12 @@ public class Movie {
         this.id = id;
     }
 
-    public List<Gender> getGender() {
-        return gender;
+    public List<Genre> getGenres() {
+        return genres;
     }
 
-    public void setGender(List<Gender> gender) {
-        this.gender = gender;
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
     }
 
     public String getHomepage() {
@@ -88,11 +87,11 @@ public class Movie {
         this.adult = adult;
     }
 
-    public int getImdbId() {
+    public String getImdbId() {
         return imdbId;
     }
 
-    public void setImdbId(int imdbId) {
+    public void setImdbId(String imdbId) {
         this.imdbId = imdbId;
     }
 
@@ -220,7 +219,7 @@ public class Movie {
     public String toString() {
         return "Movie{" +
                 "id=" + id +
-                ", gender=" + gender +
+                ", genres=" + genres +
                 ", homepage='" + homepage + '\'' +
                 ", adult=" + adult +
                 ", imdbId=" + imdbId +

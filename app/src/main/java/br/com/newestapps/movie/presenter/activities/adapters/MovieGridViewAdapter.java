@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -49,6 +50,7 @@ public class MovieGridViewAdapter extends ArrayAdapter<Movie> {
         Movie movie = getItem(position);
 
         ImageView poster = (ImageView) view.findViewById(R.id.moviePoster);
+        TextView rate = (TextView) view.findViewById(R.id.movieRate);
 
         final String posterImgUrl = config.posterImgBaseUrl + movie.getPosterPath();
 
@@ -66,6 +68,8 @@ public class MovieGridViewAdapter extends ArrayAdapter<Movie> {
                         Log.d("MovieGridViewAdapter", "ERRROOuu!!!");
                     }
                 });
+
+        rate.setText(String.format("%.1f", movie.getVoteAverage()));
 
         return view;
     }

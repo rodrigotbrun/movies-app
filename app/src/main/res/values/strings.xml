@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Movie</string>
     <string name="voce_esta_offline">Você esta offline!</string>
+    <string name="em_cartaz">Em Cartaz</string>
+    <string name="populares">Populares</string>
+    <string name="melhores_avaliados">Melhores Avaliados</string>
+    <string name="sinopse">Sinopse</string>
+    <string name="produtoras">Produtoras</string>
 </resources>

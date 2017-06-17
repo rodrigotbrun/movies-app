@@ -22,6 +22,12 @@ public interface TheMovieDbAPI {
     Call<PagedResult<Movie>> getTopRated();
 
     /**
+     * Filmes mais assistidos e avaliados
+     */
+    @GET("/3/movie/popular")
+    Call<PagedResult<Movie>> getPopulars();
+
+    /**
      * Detalhes de um filme
      */
     @GET("/3/movie/{movie_id}")

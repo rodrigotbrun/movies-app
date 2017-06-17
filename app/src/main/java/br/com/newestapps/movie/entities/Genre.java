@@ -1,6 +1,6 @@
 package br.com.newestapps.movie.entities;
 
-public class Gender {
+public class Genre {
 
     private int id;
     private String name;

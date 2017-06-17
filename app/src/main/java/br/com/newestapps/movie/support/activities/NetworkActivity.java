@@ -81,7 +81,7 @@ public abstract class NetworkActivity extends AppCompatActivity {
     }
 
     protected void renderReusableFragment(@IdRes int fragmentContainerID, Fragment fragmentToRender) {
-        renderFragment(fragmentContainerID, fragmentToRender, false);
+        renderReusableFragment(fragmentContainerID, fragmentToRender, false);
     }
 
     protected void renderFragment(@IdRes int fragmentContainerID, Fragment fragmentToRender) {

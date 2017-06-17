@@ -1,7 +1,10 @@
 package br.com.newestapps.movie.presenter.activities;
 
 import android.os.Bundle;
-import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -9,17 +12,14 @@ import com.squareup.otto.Subscribe;
 
 import br.com.newestapps.movie.App;
 import br.com.newestapps.movie.R;
-import br.com.newestapps.movie.entities.Movie;
-import br.com.newestapps.movie.entities.PagedResult;
 import br.com.newestapps.movie.events.ChangeFragment;
-import br.com.newestapps.movie.presenter.fragments.MovieGridFrament;
+import br.com.newestapps.movie.presenter.fragments.MovieBestRatedGridFragment;
+import br.com.newestapps.movie.presenter.fragments.MoviePlayingGridFragment;
+import br.com.newestapps.movie.presenter.fragments.MoviePopularsGridFragment;
 import br.com.newestapps.movie.support.activities.NetworkActivity;
 import io.github.sporklibrary.Spork;
 import io.github.sporklibrary.android.annotations.BindLayout;
 import io.github.sporklibrary.android.annotations.BindView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @BindLayout(R.layout.activity_main)
 public class MainActivity extends NetworkActivity {
@@ -34,6 +34,9 @@ public class MainActivity extends NetworkActivity {
     @BindView(R.id.contentContainer)
     LinearLayout contentContainer;
 
+    @BindView(R.id.bottomNavigation)
+    BottomNavigationView bottomNavigation;
+
     ///////////////////////////////////////////////////////////////////////////
     // Fields
     ///////////////////////////////////////////////////////////////////////////
@@ -47,23 +50,35 @@ public class MainActivity extends NetworkActivity {
         super.onCreate(savedInstanceState);
         Spork.bind(this);
         App.bus().register(this);
+
+        setupBottomNavigationBar();
     }
 
-    private void loadPlayingNow() {
-        App.api().getNowPlaying().enqueue(new Callback<PagedResult<Movie>>() {
+    private void setupBottomNavigationBar() {
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onResponse(Call<PagedResult<Movie>> call, Response<PagedResult<Movie>> response) {
-                if (response.body() != null) {
-                    renderReusableFragment(R.id.content, MovieGridFrament.newInstance(response.body().getResults()));
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                Fragment fragment = null;
+
+                switch (item.getItemId()) {
+                    case R.id.moviesPopular: // Mais Populares
+                        fragment = MoviePopularsGridFragment.newInstance();
+                        break;
+                    case R.id.moviesBestRated: // Melhores Avaliados
+                        fragment = MovieBestRatedGridFragment.newInstance();
+                        break;
+                    case R.id.moviesPlaying: // Em Cartaz
+                    default:
+                        fragment = MoviePlayingGridFragment.newInstance();
                 }
-            }
 
-
-            @Override
-            public void onFailure(Call<PagedResult<Movie>> call, Throwable t) {
-
+                renderReusableFragment(R.id.content, fragment);
+                return true;
             }
         });
+
+        bottomNavigation.setSelectedItemId(R.id.moviesPlaying);
     }
 
     @Subscribe
@@ -73,7 +88,7 @@ public class MainActivity extends NetworkActivity {
 
     @Override
     protected void onCreateIsConnected() {
-        loadPlayingNow();
+//        loadPlayingNow();
     }
 
     @Override
@@ -84,7 +99,7 @@ public class MainActivity extends NetworkActivity {
 
     @Override
     protected void onConnectionRestart() {
-        loadPlayingNow();
+//        loadPlayingNow();
         noInternetConnection.setVisibility(View.GONE);
         contentContainer.setVisibility(View.VISIBLE);
     }
