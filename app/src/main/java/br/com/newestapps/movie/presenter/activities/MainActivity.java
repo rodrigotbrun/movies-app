@@ -13,7 +13,7 @@ import com.squareup.otto.Subscribe;
 import br.com.newestapps.movie.App;
 import br.com.newestapps.movie.R;
 import br.com.newestapps.movie.events.ChangeFragment;
-import br.com.newestapps.movie.presenter.fragments.MovieBestRatedGridFragment;
+import br.com.newestapps.movie.presenter.fragments.MovieTopRatedGridFragment;
 import br.com.newestapps.movie.presenter.fragments.MoviePlayingGridFragment;
 import br.com.newestapps.movie.presenter.fragments.MoviePopularsGridFragment;
 import br.com.newestapps.movie.support.activities.NetworkActivity;
@@ -66,7 +66,7 @@ public class MainActivity extends NetworkActivity {
                         fragment = MoviePopularsGridFragment.newInstance();
                         break;
                     case R.id.moviesBestRated: // Melhores Avaliados
-                        fragment = MovieBestRatedGridFragment.newInstance();
+                        fragment = MovieTopRatedGridFragment.newInstance();
                         break;
                     case R.id.moviesPlaying: // Em Cartaz
                     default:

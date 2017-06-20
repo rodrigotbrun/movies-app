@@ -19,11 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:layout_height="wrap_content">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -44,153 +42,181 @@
                     android:layout_gravity="bottom"
                     android:background="@drawable/movie_detail_shadow_effect" />
 
-                <LinearLayout
+            </FrameLayout>
+
+
+            <com.github.rahatarmanahmed.cpv.CircularProgressView
+                android:id="@+id/circularProgress"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                app:cpv_animAutostart="true"
+                app:cpv_color="@color/colorPrimary"
+                app:cpv_indeterminate="true"
+                app:cpv_thickness="7dp" />
+
+            <LinearLayout
+                android:id="@+id/movieDetailsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0"
+                android:orientation="vertical"
+                android:visibility="visible"
+                tools:alpha="1">
+
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="235dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/moviePoster"
-                            android:layout_width="145dp"
-                            android:layout_height="200dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="15dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
-                            tools:src="@drawable/ww" />
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="15dp"
-                            android:orientation="vertical">
+                            android:orientation="horizontal">
 
-                            <android.support.v7.widget.AppCompatTextView
-                                android:id="@+id/movieTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-condensed"
-                                android:textColor="#FFFFFF"
-                                android:textSize="24sp"
-                                tools:text="Lorem ipsum dolor sit amet " />
+                            <ImageView
+                                android:id="@+id/moviePoster"
+                                android:layout_width="145dp"
+                                android:layout_height="200dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="15dp"
+                                android:adjustViewBounds="true"
+                                android:scaleType="centerCrop"
+                                tools:src="@drawable/ww" />
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:background="@drawable/movie_item_rate_background"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:paddingBottom="1dp"
-                                android:paddingLeft="4dp"
-                                android:paddingRight="4dp"
-                                android:paddingTop="1dp">
+                                android:layout_margin="15dp"
+                                android:orientation="vertical">
 
-                                <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:layout_gravity="center"
-                                    android:layout_marginRight="3dp"
-                                    android:src="@drawable/ic_star_yellow_a400_24dp" />
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/movieTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-condensed"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="24sp"
+                                    tools:text="Lorem ipsum dolor sit amet " />
 
-                                <TextView
-                                    android:id="@+id/movieRate"
+                                <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/white"
-                                    android:textSize="15dp"
-                                    tools:text="7.9" />
+                                    android:layout_marginTop="5dp"
+                                    android:background="@drawable/movie_item_rate_background"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal"
+                                    android:paddingBottom="1dp"
+                                    android:paddingLeft="4dp"
+                                    android:paddingRight="4dp"
+                                    android:paddingTop="1dp">
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginRight="3dp"
+                                        android:src="@drawable/ic_star_yellow_a400_24dp" />
+
+                                    <TextView
+                                        android:id="@+id/movieRate"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="@color/white"
+                                        android:textSize="15dp"
+                                        tools:text="7.9" />
+
+                                </LinearLayout>
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/movieGenders"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:fontFamily="sans-serif-condensed"
+                                    android:textColor="#caffffff"
+                                    android:textSize="14sp"
+                                    tools:text="Drama, Ficção, Animação" />
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/movieRuntime"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:fontFamily="sans-serif-condensed"
+                                    android:textColor="#caffffff"
+                                    android:textSize="14sp"
+                                    tools:text="137 min" />
 
                             </LinearLayout>
 
-                            <android.support.v7.widget.AppCompatTextView
-                                android:id="@+id/movieGenders"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:fontFamily="sans-serif-condensed"
-                                android:textColor="#caffffff"
-                                android:textSize="14sp"
-                                tools:text="Drama, Ficção, Animação" />
-
-                            <android.support.v7.widget.AppCompatTextView
-                                android:id="@+id/movieRuntime"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:fontFamily="sans-serif-condensed"
-                                android:textColor="#caffffff"
-                                android:textSize="14sp"
-                                tools:text="137 min" />
-
                         </LinearLayout>
+
 
                     </LinearLayout>
 
 
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="@string/sinopse"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/movieOverview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textColor="@color/md_grey_400"
+                        android:textSize="15sp"
+                        tools:text="Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet" />
+
+
+                    <TextView
+                        android:id="@+id/movieProducersTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="@string/produtoras"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/movieProducers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textColor="@color/md_grey_400"
+                        android:textSize="15sp"
+                        tools:text="Disney, Pixar" />
+
                 </LinearLayout>
 
 
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="@string/sinopse"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/movieOverview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:textColor="@color/md_grey_400"
-                    android:textSize="15sp"
-                    tools:text="Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet" />
-
-
-                <TextView
-                    android:id="@+id/movieProducersTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="@string/produtoras"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/movieProducers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:textColor="@color/md_grey_400"
-                    android:textSize="15sp"
-                    tools:text="Disney, Pixar" />
-
             </LinearLayout>
 
-
-        </LinearLayout>
+        </FrameLayout>
 
     </ScrollView>
 

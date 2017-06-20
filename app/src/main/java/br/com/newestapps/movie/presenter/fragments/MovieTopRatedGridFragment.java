@@ -9,20 +9,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.List;
 
-import br.com.newestapps.movie.App;
 import br.com.newestapps.movie.R;
+import br.com.newestapps.movie.data.BaseRepository;
+import br.com.newestapps.movie.data.repositories.MovieRepository;
 import br.com.newestapps.movie.entities.Movie;
 import br.com.newestapps.movie.entities.PagedResult;
-import br.com.newestapps.movie.events.ChangeFragment;
 import br.com.newestapps.movie.presenter.activities.MovieDetailsActivity;
 import br.com.newestapps.movie.presenter.activities.adapters.MovieGridViewAdapter;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Subscriber;
 
-public class MovieBestRatedGridFragment extends Fragment {
+public class MovieTopRatedGridFragment extends Fragment {
 
     ///////////////////////////////////////////////////////////////////////////
     // Views
@@ -40,7 +40,7 @@ public class MovieBestRatedGridFragment extends Fragment {
     // Methods
     ///////////////////////////////////////////////////////////////////////////
 
-    public MovieBestRatedGridFragment() {
+    public MovieTopRatedGridFragment() {
 
     }
 
@@ -61,37 +61,47 @@ public class MovieBestRatedGridFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         movieGrid = (GridView) view.findViewById(R.id.movieGrid);
 
-        App.api().getTopRated().enqueue(new Callback<PagedResult<Movie>>() {
-            @Override
-            public void onResponse(Call<PagedResult<Movie>> call, Response<PagedResult<Movie>> response) {
-                if (response.body() != null) {
-                    movies = response.body().getResults();
+        MovieRepository movieRepository = (MovieRepository) BaseRepository.getProperRepository(
+                getContext(), MovieRepository.class);
 
-                    if (movies != null && movies.size() > 0) {
-                        MovieGridViewAdapter adapter = new MovieGridViewAdapter(getContext(), movies);
-                        movieGrid.setAdapter(adapter);
-
-                        movieGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                                Movie movie = movies.get(position);
-                                startActivity(MovieDetailsActivity.newIntent(getContext(), movie));
-                            }
-                        });
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PagedResult<Movie>> call, Throwable t) {
-
-            }
-        });
+        movieRepository.getTopRated().subscribe(fetchSubscriber);
     }
 
-    public static MovieBestRatedGridFragment newInstance() {
-        MovieBestRatedGridFragment frament = new MovieBestRatedGridFragment();
+    private Subscriber<PagedResult<Movie>> fetchSubscriber = new Subscriber<PagedResult<Movie>>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            new MaterialDialog.Builder(getContext())
+                    .content(e.getMessage())
+                    .show();
+        }
+
+        @Override
+        public void onNext(PagedResult<Movie> moviePagedResult) {
+            movies = moviePagedResult.getResults();
+
+            if (movies != null && movies.size() > 0) {
+                MovieGridViewAdapter adapter = new MovieGridViewAdapter(getContext(), movies);
+                movieGrid.setAdapter(adapter);
+
+                movieGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        Movie movie = movies.get(position);
+                        startActivity(MovieDetailsActivity.newIntent(getContext(), movie));
+                    }
+                });
+            }
+        }
+
+    };
+
+    public static MovieTopRatedGridFragment newInstance() {
+        MovieTopRatedGridFragment frament = new MovieTopRatedGridFragment();
         return frament;
     }
 }

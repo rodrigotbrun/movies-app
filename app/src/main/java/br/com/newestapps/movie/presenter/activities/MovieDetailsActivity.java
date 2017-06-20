@@ -1,5 +1,6 @@
 package br.com.newestapps.movie.presenter.activities;
 
+import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.AppCompatTextView;
@@ -17,10 +19,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.gson.Gson;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -28,6 +35,8 @@ import com.squareup.picasso.Target;
 import br.com.newestapps.movie.App;
 import br.com.newestapps.movie.Config;
 import br.com.newestapps.movie.R;
+import br.com.newestapps.movie.data.BaseRepository;
+import br.com.newestapps.movie.data.repositories.MovieRepository;
 import br.com.newestapps.movie.entities.Genre;
 import br.com.newestapps.movie.entities.Movie;
 import br.com.newestapps.movie.entities.ProductionCompany;
@@ -38,6 +47,7 @@ import io.github.sporklibrary.android.annotations.BindLayout;
 import io.github.sporklibrary.android.annotations.BindView;
 import retrofit2.Call;
 import retrofit2.Response;
+import rx.Subscriber;
 
 @BindLayout(R.layout.activity_movie_details)
 public class MovieDetailsActivity extends NetworkActivity {
@@ -78,11 +88,21 @@ public class MovieDetailsActivity extends NetworkActivity {
     @BindView(R.id.movieProducersTitle)
     TextView movieProducersTitle;
 
+    @BindView(R.id.circularProgress)
+    CircularProgressView circularProgress;
+
+    @BindView(R.id.movieDetailsContainer)
+    LinearLayout movieDetailsContainer;
+
     ///////////////////////////////////////////////////////////////////////////
     // Fields
     ///////////////////////////////////////////////////////////////////////////
 
     private Movie movie;
+    private MovieRepository movieRepository;
+    private Config config;
+
+    private int CONTENT_ANIMATION_DURATION = 1200;
 
     ///////////////////////////////////////////////////////////////////////////
     // Methods
@@ -93,6 +113,7 @@ public class MovieDetailsActivity extends NetworkActivity {
         super.onCreate(savedInstanceState);
         Spork.bind(this);
         App.bus().register(this);
+        config = new Config(this);
 
         setSupportActionBar(toolbar);
 
@@ -104,23 +125,126 @@ public class MovieDetailsActivity extends NetworkActivity {
             final String movieObject = b.getString(KEY_MOVIE, null);
             movie = new Gson().fromJson(movieObject, Movie.class);
 
-            App.api().getMovie(movie.getId()).enqueue(new retrofit2.Callback<Movie>() {
-                @Override
-                public void onResponse(Call<Movie> call, Response<Movie> response) {
-                    movie = response.body();
-                    renderView();
-                }
+            movieRepository = (MovieRepository)
+                    BaseRepository.getProperRepository(this, MovieRepository.class);
 
-                @Override
-                public void onFailure(Call<Movie> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });
-
+            loadMovieDetails();
         } else {
             finish();
         }
     }
+
+    private void loadMovieDetails() {
+        final String backdropImgUrl = config.posterImgBaseUrl + movie.getBackdropPath();
+
+        Picasso.with(this)
+                .load(backdropImgUrl)
+                .into(new PalettePicassoHandler(movieBackdrop, true, new Runnable() {
+                    @Override
+                    public void run() {
+                        loadingState(true);
+                        movieRepository.getMovie(movie.getId()).subscribe(movieGetDetailsSubscriber);
+                    }
+                }));
+    }
+
+    private void loadingState(boolean loadingContent /* ? */) {
+        if (loadingContent) {
+            circularProgress.animate()
+                    .alpha(100)
+                    .setDuration(500)
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            movieDetailsContainer.animate()
+                                    .alpha(0)
+                                    .setDuration(CONTENT_ANIMATION_DURATION);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
+
+        } else {
+            circularProgress.animate()
+                    .alpha(0)
+                    .setDuration(500)
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            movieDetailsContainer.animate()
+                                    .alpha(100)
+                                    .setDuration(CONTENT_ANIMATION_DURATION);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
+        }
+    }
+
+    private Subscriber<? super Movie> movieGetDetailsSubscriber = new Subscriber<Movie>() {
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            e.printStackTrace();
+
+            new MaterialDialog.Builder(MovieDetailsActivity.this)
+                    .content(e.getMessage())
+                    .positiveText("OK")
+                    .neutralText("Tentar Novamente")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            finish();
+                        }
+                    })
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            loadMovieDetails();
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        }
+
+        @Override
+        public void onNext(Movie m) {
+            loadingState(false);
+
+            movie = m;
+            renderView();
+        }
+    };
+
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -141,9 +265,7 @@ public class MovieDetailsActivity extends NetworkActivity {
     }
 
     private void renderView() {
-        Config config = new Config(this);
         final String posterImgUrl = config.posterImgBaseUrl + movie.getPosterPath();
-        final String backdropImgUrl = config.posterImgBaseUrl + movie.getBackdropPath();
 
         toolbar.setTitle(movie.getTitle());
         movieTitle.setText(movie.getTitle());
@@ -195,12 +317,7 @@ public class MovieDetailsActivity extends NetworkActivity {
 
         Picasso.with(this)
                 .load(posterImgUrl)
-                .into(new PalettePicassoHandler(moviePoster, true));
-
-        Picasso.with(this)
-                .load(backdropImgUrl)
-                .networkPolicy(NetworkPolicy.NO_CACHE)
-                .into(new PalettePicassoHandler(movieBackdrop, false));
+                .into(new PalettePicassoHandler(moviePoster, false, null));
     }
 
     @Subscribe
@@ -242,10 +359,12 @@ public class MovieDetailsActivity extends NetworkActivity {
 
         private ImageView where;
         private boolean callAdaptUIColors = false;
+        private Runnable runAfter;
 
-        public PalettePicassoHandler(ImageView where, boolean callAdaptUIColors) {
+        public PalettePicassoHandler(ImageView where, boolean callAdaptUIColors, Runnable runAfter) {
             this.where = where;
             this.callAdaptUIColors = callAdaptUIColors;
+            this.runAfter = runAfter;
         }
 
         @Override
@@ -256,6 +375,11 @@ public class MovieDetailsActivity extends NetworkActivity {
                     .generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
+
+                            if (runAfter != null) {
+                                runAfter.run();
+                            }
+
                             if (callAdaptUIColors) {
                                 changeToolbarColors(
                                         palette.getVibrantColor(Color.parseColor("#D32F2F")),

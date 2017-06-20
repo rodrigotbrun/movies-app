@@ -2,6 +2,7 @@ package br.com.newestapps.movie.apis.themoviedb;
 
 import br.com.newestapps.movie.entities.Movie;
 import br.com.newestapps.movie.entities.PagedResult;
+import br.com.newestapps.movie.entities.Trailer;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -37,6 +38,6 @@ public interface TheMovieDbAPI {
      * Trailers de um filme
      */
     @GET("/3/movie/{movie_id}/videos")
-    Call<Movie> getMovieTrailers(@Path("movie_id") int movieId);
+    Call<Trailer> getMovieTrailers(@Path("movie_id") int movieId);
 
 }
